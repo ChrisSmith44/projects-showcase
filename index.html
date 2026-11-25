@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A concise overview of two software projects: Harness Factory and Keelion.">
+  <title>Selected Projects | Engineering &amp; Product Thinking</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17212b;
+      --muted: #526170;
+      --line: #dce4eb;
+      --surface: #ffffff;
+      --background: #f3f6f9;
+      --accent: #245c8f;
+      --accent-soft: #eaf2f9;
+      --tag-border: #d5e2ed;
+      --tag-ink: #294d6c;
+      --note: #fff8e8;
+      --note-line: #e8c976;
+      --note-ink: #59491e;
+      --closing: #e9eff4;
+      --closing-ink: #3c4b58;
+      --summary-ink: #293744;
+      --shadow: rgb(23 33 43 / 5%);
+      --radius: 16px;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #e7edf3;
+      --muted: #aab8c5;
+      --line: #344453;
+      --surface: #202c37;
+      --background: #131c24;
+      --accent: #91c5f2;
+      --accent-soft: #263d50;
+      --tag-border: #3d596f;
+      --tag-ink: #d5e9f8;
+      --note: #3a3220;
+      --note-line: #c4a754;
+      --note-ink: #f2dfaa;
+      --closing: #263540;
+      --closing-ink: #d0dbe4;
+      --summary-ink: #d8e2eb;
+      --shadow: rgb(0 0 0 / 18%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      transition: background-color 180ms ease, color 180ms ease;
+    }
+
+    main {
+      width: min(940px, calc(100% - 32px));
+      margin: 48px auto;
+    }
+
+    header {
+      margin-bottom: 30px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: -0.045em;
+      line-height: 1.12;
+    }
+
+    .intro {
+      max-width: 720px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .theme-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 180ms ease, border-color 180ms ease,
+        color 180ms ease;
+    }
+
+    .theme-control:hover {
+      border-color: var(--accent);
+    }
+
+    .theme-control:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .switch-track {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: #8998a5;
+      transition: background-color 180ms ease;
+    }
+
+    .switch-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 180ms ease;
+    }
+
+    .theme-control[aria-pressed="true"] .switch-track {
+      background: #397cb0;
+    }
+
+    .theme-control[aria-pressed="true"] .switch-thumb {
+      transform: translateX(16px);
+    }
+
+    .project {
+      margin: 22px 0;
+      padding: clamp(22px, 4vw, 36px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 8px 26px var(--shadow);
+      transition: background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .project-header {
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 3vw, 1.9rem);
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+
+    .summary {
+      max-width: 780px;
+      margin: 0;
+      color: var(--summary-ink);
+      font-size: 1.04rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 22px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tags li {
+      padding: 5px 10px;
+      border: 1px solid var(--tag-border);
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--tag-ink);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px 32px;
+    }
+
+    h3 {
+      margin: 0 0 7px;
+      font-size: 1rem;
+    }
+
+    .details p,
+    .details ul {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .details ul {
+      padding-left: 20px;
+    }
+
+    .details li + li {
+      margin-top: 5px;
+    }
+
+    .caveat {
+      margin-top: 22px;
+      padding: 13px 15px;
+      border-left: 3px solid var(--note-line);
+      border-radius: 0 8px 8px 0;
+      background: var(--note);
+      color: var(--note-ink);
+      font-size: 0.9rem;
+    }
+
+    .closing {
+      margin-top: 30px;
+      padding: 24px clamp(22px, 4vw, 32px);
+      border-radius: var(--radius);
+      background: var(--closing);
+    }
+
+    .closing h2 {
+      font-size: 1.2rem;
+    }
+
+    .closing p {
+      max-width: 780px;
+      margin: 9px 0 0;
+      color: var(--closing-ink);
+    }
+
+    footer {
+      margin: 22px 4px 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 640px) {
+      main {
+        margin: 24px auto;
+      }
+
+      .details {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @media print {
+      :root,
+      :root[data-theme="dark"] {
+        color-scheme: light;
+        --ink: #17212b;
+        --muted: #526170;
+        --line: #dce4eb;
+        --surface: #ffffff;
+        --background: #ffffff;
+        --accent: #245c8f;
+        --accent-soft: #eaf2f9;
+        --tag-border: #d5e2ed;
+        --tag-ink: #294d6c;
+        --note: #fff8e8;
+        --note-line: #e8c976;
+        --note-ink: #59491e;
+        --closing: #e9eff4;
+        --closing-ink: #3c4b58;
+        --summary-ink: #293744;
+        --shadow: transparent;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      main {
+        width: 100%;
+        margin: 0;
+      }
+
+      .theme-control {
+        display: none;
+      }
+
+      .project {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+
+      .closing {
+        break-inside: avoid;
+      }
+    }
+  </style>
+
+  <script>
+    (() => {
+      let theme;
+
+      try {
+        theme = localStorage.getItem("selected-projects-theme");
+      } catch {
+        // Use the system preference when browser storage is unavailable.
+      }
+
+      if (theme !== "light" && theme !== "dark") {
+        theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Selected projects</p>
+      <h1>Building useful software with clear systems behind it</h1>
+      <p class="intro">
+        These projects explore two different engineering challenges: making
+        AI-assisted work more evidence-based and repeatable, and helping people
+        compare the longer-term costs of car ownership.
+      </p>
+
+      <button
+        class="theme-control"
+        id="theme-toggle"
+        type="button"
+        aria-label="Switch to dark mode"
+        aria-pressed="false"
+      >
+        <span class="switch-track" aria-hidden="true">
+          <span class="switch-thumb"></span>
+        </span>
+        <span id="theme-label">Dark mode</span>
+      </button>
+    </header>
+
+    <article class="project" aria-labelledby="harness-title">
+      <div class="project-header">
+        <h2 id="harness-title">Harness Factory</h2>
+      </div>
+
+      <p class="summary">
+        Harness Factory develops a portable delivery kit that helps teams give
+        AI coding agents project-specific knowledge, workflows, and checks. Its
+        central design idea is to keep reusable harness structure separate
+        from the domain knowledge and rules that belong to each adopting
+        project.
+      </p>
+
+      <ul class="tags" aria-label="Project themes">
+        <li>Python tooling</li>
+        <li>AI-assisted engineering</li>
+        <li>Project knowledge</li>
+        <li>Installable delivery kit</li>
+        <li>Checks and workflow design</li>
+      </ul>
+
+      <div class="details">
+        <section>
+          <h3>Intent and design</h3>
+          <p>
+            The factory gathers and evaluates practices for AI-assisted
+            engineering, then packages selected tools and structure for use in
+            another repository. The delivery is designed to be installed
+            locally in a project, with its knowledge and project-specific
+            content remaining under that project's control.
+          </p>
+        </section>
+
+        <section>
+          <h3>How the delivery works</h3>
+          <p>
+            The kit is downloaded and unpacked outside the target repository.
+            The maintainer can first preview the install plan, then apply it
+            from the repository root and review the resulting changes before
+            committing. The documented setup uses Python and the standard
+            library for installation; it does not install software globally
+            or fetch dependencies as part of the described install.
+          </p>
+        </section>
+
+        <section>
+          <h3>Why it has potential</h3>
+          <p>
+            Agent behavior and LLM wiegths are limited when it comes to specific domains,
+            especially outside of pure software development. Agentic accuracy and efficiency
+            wastly improves when it reflects a project's terminology, constraints, and
+            review practices. A deterministic environment around the agetn harness that
+            combines knowledge, checks, and repeatable workflows offers a practical way to
+            bring agentic development work to a sustainable and cost-efficient level.
+          </p>
+        </section>
+
+        <section>
+          <h3>Released delivery kit — v1.2.0</h3>
+          <ul>
+            <li>
+              Outer-Harness kit, building on top of vendored agent harnesses
+              for engineering projects that are advancing for agentic AI
+              integration onto their development processes.
+            </li>
+            <li>
+              Lightweight offline 4 layer agent memory system
+              Working/Episodic/Semantic/Procedural
+            </li>
+            <li>
+              Deterministic verificaiton mechanisms built on LLM-Wiki and OKF v2.0.
+            </li>
+            <li>
+              Agent workflow with deterministic starting and closing mechanisms for
+              user-agent &amp; multi-agent sessions
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Possible future directions</h3>
+          <p>
+            The roadmap discusses ideas such as a eval system, secutiry system, multi-model
+            system (LLM + decision model), optional trace capture to provide stronger
+            evidence for the ledger, and more deliberate selection of which skills a harness
+            carries. These are roadmap concepts, not claims about the released v1.2.0 kit.
+          </p>
+        </section>
+
+        <section>
+          <h3>What it demonstrates</h3>
+          <p>
+            The project reflects systems thinking and product discipline:
+            defining ownership boundaries, making installation reviewable,
+            validating artifacts, and distinguishing documented evidence from
+            assumptions. It also shows how an internal toolchain can be shaped
+            into a versioned, user-facing delivery.
+          </p>
+        </section>
+      </div>
+
+      <p class="caveat">
+        <strong>Version scope:</strong> The listed delivery-kit capabilities
+        describe v1.2.0. The roadmap presents future work as a plan without
+        dates or a release commitment; the concepts above should not be read
+        as confirmed v1.3.0 features.
+      </p>
+    </article>
+
+    <article class="project" aria-labelledby="keelion-title">
+      <div class="project-header">
+        <h2 id="keelion-title">Keelion</h2>
+      </div>
+
+      <p class="summary">
+        Keelion is a car-purchase decision-support application built around
+        Total Cost of Ownership (TCO): the idea that comparing vehicles should
+        account for more than their purchase price. The product direction
+        combines vehicle selection, user-specific assumptions, cost analysis,
+        and recommendations in a guided web experience.
+      </p>
+
+      <ul class="tags" aria-label="Project themes">
+        <li>React and TypeScript</li>
+        <li>Python and Django REST Framework</li>
+        <li>Decision support</li>
+        <li>Modular calculation engines</li>
+        <li>Automotive domain</li>
+      </ul>
+
+      <div class="details">
+        <section>
+          <h3>Intent and design</h3>
+          <p>
+            The application is organized as a frontend connected to a backend
+            API, with separate Python packages for TCO calculation and
+            recommendation logic. The intended user journey is a guided
+            sequence: choose cars, provide ownership assumptions, then review
+            comparisons.
+          </p>
+        </section>
+
+        <section>
+          <h3>Main product ideas</h3>
+          <ul>
+            <li>
+              Compare vehicles using ownership-cost categories, not only
+              sticker price.
+            </li>
+            <li>
+              Tailor analysis to inputs such as mileage, ownership period, and
+              budget.
+            </li>
+            <li>
+              Present side-by-side results and recommendations as decision
+              support, with vehicle variants as part of the comparison.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Why it has potential</h3>
+          <p>
+            Car purchases involve meaningful trade-offs between upfront cost,
+            running costs, and personal needs. A tool that makes assumptions
+            visible and comparisons easier to understand could help users ask
+            better questions before making a purchase.
+          </p>
+        </section>
+
+        <section>
+          <h3>What it demonstrates</h3>
+          <p>
+            Keelion shows product-oriented engineering across a user workflow,
+            a typed web interface, API boundaries, and domain-focused
+            calculation components. The repository also includes project and
+            API documentation, helping make the intended architecture and
+            development direction understandable.
+          </p>
+        </section>
+      </div>
+
+      <p class="caveat">
+        <strong>Current stage:</strong> The repository documents a broader
+        product vision, but its backend documentation identifies the TCO and
+        recommendation API endpoints as stubs. The cost-modeling and
+        recommendation concepts should therefore be understood as development
+        work and product direction, not as a claim of a fully integrated,
+        production-ready service.
+      </p>
+    </article>
+
+    <section class="closing" aria-labelledby="approach-title">
+      <h2 id="approach-title">A balanced engineering approach</h2>
+      <p>
+        Together, these projects show an interest in building systems that are
+        understandable as well as useful: clarifying the problem, separating
+        responsibilities, documenting decisions, and being explicit about
+        what is implemented versus what remains a hypothesis or next step.
+        Both projects are works in progress, and their potential depends on
+        continued testing, feedback, and iteration.
+      </p>
+    </section>
+
+    <footer></footer>
+  </main>
+
+  <script>
+    (() => {
+      const toggle = document.getElementById("theme-toggle");
+      const label = document.getElementById("theme-label");
+      const root = document.documentElement;
+
+      function updateToggle(theme) {
+        const isDark = theme === "dark";
+        toggle.setAttribute("aria-pressed", String(isDark));
+        toggle.setAttribute(
+          "aria-label",
+          isDark ? "Switch to light mode" : "Switch to dark mode"
+        );
+        label.textContent = isDark ? "Light mode" : "Dark mode";
+      }
+
+      updateToggle(root.dataset.theme);
+
+      toggle.addEventListener("click", () => {
+        const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+        root.dataset.theme = nextTheme;
+        updateToggle(nextTheme);
+
+        try {
+          localStorage.setItem("selected-projects-theme", nextTheme);
+        } catch {
+          // The theme still works for this page view if storage is unavailable.
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
